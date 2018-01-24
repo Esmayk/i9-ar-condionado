@@ -47,7 +47,7 @@ public class PessoaBean implements Serializable {
     private Estado estado;
     private Cidade cidade;
     private Endereco endereco;
-    private Pessoa pessoaSelecionada;
+    private List<Pessoa> pessoaSelecionadas = new ArrayList<>();
 
     public PessoaBean() {
         pessoa = new Pessoa();
@@ -102,7 +102,8 @@ public class PessoaBean implements Serializable {
 
     public void remover() {
         try {
-            pessoaFacade.remover(pessoaSelecionada);
+            pessoa = pessoaSelecionadas.get(0);
+            pessoaFacade.remover(pessoa);
             pessoas = pessoaFacade.listar();
             FacesMessages.info("Pessoa removido com sucesso.");
         } catch (RuntimeException erro) {
@@ -112,17 +113,16 @@ public class PessoaBean implements Serializable {
     }
 
     public void onSelect(Pessoa pessoa, String typeOfSelection, String indexes) {
-        System.out.println("OnSelect:" + pessoa + " typeOfSelection: " + typeOfSelection + " indexes: " + indexes);
         if (null != pessoa) {
-            setPessoaSelecionada(pessoa);
+            getPessoaSelecionadas().add(pessoa);
         } else if (null != indexes) {
             String[] indexArray = indexes.split(",");
             for (String index : indexArray) {
                 int i = Integer.valueOf(index);
                 Pessoa p = pessoas.get(i);
-//                if (!pessoaSelecionada.equals(p.toString()))) {
-//                    setPessoaSelecionada(p);
-//                }
+                if (!pessoaSelecionadas.contains(p)) {
+                    getPessoaSelecionadas().add(p);
+                }
             }
         }
     }
@@ -191,12 +191,12 @@ public class PessoaBean implements Serializable {
         this.endereco = endereco;
     }
 
-    public Pessoa getPessoaSelecionada() {
-        return pessoaSelecionada;
+    public List<Pessoa> getPessoaSelecionadas() {
+        return pessoaSelecionadas;
     }
 
-    public void setPessoaSelecionada(Pessoa pessoaSelecionada) {
-        this.pessoaSelecionada = pessoaSelecionada;
+    public void setPessoaSelecionadas(List<Pessoa> pessoaSelecionadas) {
+        this.pessoaSelecionadas = pessoaSelecionadas;
     }
 
 }
