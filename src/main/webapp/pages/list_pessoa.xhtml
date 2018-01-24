@@ -1,0 +1,46 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:b="http://bootsfaces.net/ui"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:pt="http://xmlns.jcp.org/jsf/passthrough">
+    <ui:composition template="../template/template.xhtml">
+        <ui:define name="conteudo">
+            <b:form id="formListagem">
+                <h4>Listagem de Pessoas</h4>
+                <b:panel class="panel-heading">
+                    <b:dataTable value="#{pessoaBean.pessoas}" border="false" lang="PT-Br"
+                                 var="pessoa" customLangUrl="../json/pt-br.json" select="true"
+                                 selection-mode="single" selected-items="row" selected-row="#{pessoa}" onselect="ajax:pessoaBean.onSelect(pessoa, typeOfSelection, indexes)">
+                        <b:dataTableColumn value="#{pessoa.nome}" label="Nome" order="asc"/>
+                        <b:dataTableColumn value="#{pessoa.cpf}" label="CPF"/>
+                        <b:dataTableColumn value="#{pessoa.nascimento}" label="Data Nascimento" />
+                        <b:dataTableColumn value="#{pessoa.telefone}" label="Telefone"/>
+                    </b:dataTable>
+                    <b:commandButton value="Adicionar" action="#{pessoaBean.adicionar}" class="btn btn-primary" icon="glyphicon glyphicon-plus" ajax="false"/>
+                    <b/>
+                    <b:commandButton value="Editar" update=":mgs" class="btn btn-warning" icon="glyphicon glyphicon-pencil" />
+                    <b/>
+                    <b:commandButton value="Remover" class="btn btn-danger" icon="glyphicon glyphicon-trash"
+                                     onclick="ajax:pessoaBean.remover();" update="formListagem">
+                    </b:commandButton>
+                </b:panel>
+                <b:modal id="amodal2" title="Modal Example" styleClass="modalPseudoClass2"
+                         closable="false"  close-on-escape="false" backdrop="false">
+                    <p>
+                        Deseja Remover Pessoa?
+                    </p>
+                    <f:facet name="footer">
+                        <b:button value="Close" dismiss="modal" />
+                        <b:button value="Ok" look="primary" dismiss="modal" />
+                    </f:facet>
+                </b:modal>
+            </b:form>
+
+        </ui:define>
+    </ui:composition>
+
+</html>
+

@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:b="http://bootsfaces.net/ui"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:h="http://java.sun.com/jsf/html">
+    <h:head>
+        <title>I9Arcondicionado</title>
+        <link rel="stylesheet" type="text/css" href="css/login.css"/>
+    </h:head>
+
+    <h:body>
+        <b:form id="loginForm" class="form-signin">
+            <b:messages id="messages" />
+            <b:panel class="panel panel-default" style="width: 25%; margin-top: 15%; margin-left: 38%;
+                    padding: 15px; border: 1px solid rgba(51, 122, 183, 1); box-shadow: 7px 25px 30px rgba(0, 0, 0, 0.20);">
+            <b:column>
+                <h3 class="painel-title" style="text-align: center; color: #337ab7">Autenticação de Usuário</h3>
+            </b:column>
+            <b:column>
+                <div class="input-group">
+                    <span class="input-group-addon"><i class="glyphicon glyphicon-user"></i></span>
+                    <b:inputText class="form-control" id="usuario" 
+                                 type="text" name="usuario" fieldId="usuario"
+                                 value="#{usuarioBean.usuario.login}"  
+                                 placeholder="Usuário" required="true" />
+                </div>
+            </b:column>
+                <b:column>
+                    <p/>
+                </b:column>
+            <b:column>
+                <div class="input-group">
+                    <span class="input-group-addon"><i class="glyphicon glyphicon-lock"></i></span>
+                    <b:inputText type="password" class="form-control" 
+                                 id="senha" name="senha" fieldId="password"
+                                 value="#{usuarioBean.usuario.senha}" 
+                                 placeholder="Password" required="true"/>
+                </div>
+            </b:column>
+                <b:column>
+                    <p/>
+                </b:column>
+            <b:column>
+                <b:commandButton value="Entrar" class="btn btn-lg btn-primary btn-block" action="#{usuarioBean.envia}" ajax="false" />
+            </b:column>
+            </b:panel>
+        </b:form>
+    </h:body>
+</html>

@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:b="http://bootsfaces.net/ui"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:pt="http://xmlns.jcp.org/jsf/passthrough">
+    <ui:composition template="../template/template.xhtml">
+        <ui:define name="conteudo">
+            <h4>Cadastro de Pessoas</h4>
+            <b:form id="formCadastro">
+                <b:panel>
+                    <b:panelGrid columns="3">
+                        <b:inputText label="Nome: " 
+                                     placeholder="Nome"
+                                     rendered="true" id="nome"
+                                     fieldSize="sm" value="#{pessoaBean.pessoa.nome}"/>
+
+                        <b:inputText placeholder="Cpf" 
+                                     label="Cpf: " fieldSize="sm" value="#{pessoaBean.pessoa.cpf}"/>
+
+                        <b:selectOneMenu colMd="2" label="Estado_Civil:" labelColMd="2" fieldSize="sm" span="15" value="#{pessoaBean.pessoa.estadoCivil}">
+                            <f:selectItem itemLabel="(Selecione uma Opção)" itemValue="" />
+                            <f:selectItem itemLabel="SOLTEIRO" itemValue="S" />
+                            <f:selectItem itemLabel="CASADO" itemValue="C" />
+                        </b:selectOneMenu>
+
+                        <b:selectOneMenu  colMd="2" label="Sexo:" labelColMd="2" fieldSize="sm" span="15" value="#{pessoaBean.pessoa.sexo}">
+                            <f:selectItem itemLabel="(Selecione uma Opção)" itemValue="" />
+                            <f:selectItem itemLabel="MASCULINO" itemValue="M" />
+                            <f:selectItem itemLabel="FEMININO" itemValue="F" />
+                        </b:selectOneMenu>
+
+                        <b:datepicker id="cdate3" mode="icon-popup" showWeek="false"
+                                      firstDay="1" placeholder="Data Nascimento" 
+                                      label="Date:" value="#{pessoaBean.pessoa.nascimento}"/>
+
+                        <b:inputText label="Nome Mãe: " 
+                                     placeholder="Nome Mãe"
+                                     fieldSize="sm" value="#{pessoaBean.pessoa.mae}"/>
+
+                        <b:inputText label="Nome Pai: " 
+                                     placeholder="Nome Pai"
+                                     fieldSize="sm" value="#{pessoaBean.pessoa.pai}"/>
+
+                        <b:inputText placeholder="Telefone" 
+                                     label="Telefone: " fieldSize="sm" value="#{pessoaBean.pessoa.telefone}"/>
+
+                        <b:inputText placeholder="Celular" 
+                                     label="Celular: " fieldSize="sm" value="#{pessoaBean.pessoa.celular}"/>
+
+                        <b:inputText label="Endereço: " 
+                                     placeholder="Endereço"
+                                     fieldSize="sm" value="#{pessoaBean.endereco.endDescricao}"/>
+
+                        <b:inputText fieldSize="sm"
+                                     label="Numero:" render-label="true" value="#{pessoaBean.endereco.numero}"/>
+
+                        <b:inputText label="Complemento: " 
+                                     placeholder="Complemento"
+                                     fieldSize="sm" value="#{pessoaBean.endereco.complemento}"/>
+
+                        <b:inputText label="Bairro: " 
+                                     placeholder="Bairro"
+                                     fieldSize="sm" value="#{pessoaBean.endereco.bairro}"/>
+
+                        <b:inputText placeholder="Cep" 
+                                     label="Cep: " fieldSize="sm" value="#{pessoaBean.endereco.cep}"/>
+
+                    </b:panelGrid>
+                </b:panel>
+                <b/>
+                <b:commandButton value="Voltar" action="list_pessoa.xhtml"/>
+                <b/>
+                <b:commandButton value="Cadastrar" update="mgs"
+                                 look="primary" onclick="ajax:pessoaBean.salvar()" />
+            </b:form>
+
+        </ui:define>
+    </ui:composition>
+</html>
