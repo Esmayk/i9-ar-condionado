@@ -14,6 +14,7 @@ import br.com.i9arcondicionado.session.EstadoFacade;
 import br.com.i9arcondicionado.session.PessoaFacade;
 import java.io.Serializable;
 import java.math.BigInteger;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -41,23 +42,26 @@ public class PessoaBean implements Serializable {
     CidadeFacade cidadeFacade;
 
     private Pessoa pessoa;
-    private List<Pessoa> pessoas;
-    private List<Estado> estados;
-    private List<Cidade> cidades;
     private Estado estado;
     private Cidade cidade;
     private Endereco endereco;
-    private List<Pessoa> pessoaSelecionadas = new ArrayList<>();
+
+    private Pessoa pessoaSelecionada;
+    private List<Pessoa> pessoas = new ArrayList<>();
+    private List<Estado> estados;
+    private List<Cidade> cidades;
+
+    SimpleDateFormat format = new SimpleDateFormat("dd/MM/yyyy");
 
     public PessoaBean() {
         pessoa = new Pessoa();
         endereco = new Endereco();
-
     }
 
     public void salvar() {
         try {
-            cidade = cidadeFacade.listar(BigInteger.valueOf(6L));
+            endereco = new Endereco();
+            //cidade = cidadeFacade.listar();
             endereco.setCidadeFk(cidade);
             pessoa.setEnderecoFk(endereco);
             pessoa.setDataCadastro(new Date());
@@ -73,16 +77,16 @@ public class PessoaBean implements Serializable {
 
     public String adicionar() {
         estados = estadoFacade.listar();
-        return "cad_pessoa";
+        return "pessoa";
     }
 
     public String voltar() {
-        return "list_pessoa";
+        return "pessoa";
     }
 
     public void popular() {
         if (estado != null) {
-            cidades = (List<Cidade>) cidadeFacade.listar(new BigInteger("6"));
+            cidades = (List<Cidade>) cidadeFacade.listar(estado.getId());
             estados = estadoFacade.listar();
         } else {
             cidades = new ArrayList<>();
@@ -92,7 +96,8 @@ public class PessoaBean implements Serializable {
     @PostConstruct
     public void listar() {
         try {
-            pessoas = pessoaFacade.listar();
+            List<Pessoa> lista = pessoaFacade.listar();
+            pessoas = listaPessoasFormatada(lista);
         } catch (RuntimeException erro) {
             FacesMessages.error("Ocorreu um erro ao tentar listar os pessoas");
             erro.printStackTrace();
@@ -102,29 +107,38 @@ public class PessoaBean implements Serializable {
 
     public void remover() {
         try {
-            pessoa = pessoaSelecionadas.get(0);
-            pessoaFacade.remover(pessoa);
-            pessoas = pessoaFacade.listar();
+            pessoaFacade.remover(pessoaSelecionada);
+            pessoas.clear();
+            List<Pessoa> lista = pessoaFacade.listar();
+            pessoas = listaPessoasFormatada(lista);
             FacesMessages.info("Pessoa removido com sucesso.");
         } catch (RuntimeException erro) {
             FacesMessages.error("Ocorreu um erro ao tentar remover pessoa.");
-            erro.printStackTrace();
+            erro.getMessage();
         }
     }
 
     public void onSelect(Pessoa pessoa, String typeOfSelection, String indexes) {
         if (null != pessoa) {
-            getPessoaSelecionadas().add(pessoa);
+            setPessoaSelecionada(pessoa);
         } else if (null != indexes) {
             String[] indexArray = indexes.split(",");
             for (String index : indexArray) {
                 int i = Integer.valueOf(index);
                 Pessoa p = pessoas.get(i);
-                if (!pessoaSelecionadas.contains(p)) {
-                    getPessoaSelecionadas().add(p);
+                if (!pessoas.contains(p)) {
+                    setPessoaSelecionada(p);
                 }
             }
         }
+    }
+
+    private List<Pessoa> listaPessoasFormatada(List<Pessoa> lista) {
+        for (Pessoa pes : lista) {
+            pes.setDtNas(format.format(pes.getNascimento()));
+            pessoas.add(pes);
+        }
+        return pessoas;
     }
 
     public PessoaFacade getPessoaFacade() {
@@ -191,12 +205,12 @@ public class PessoaBean implements Serializable {
         this.endereco = endereco;
     }
 
-    public List<Pessoa> getPessoaSelecionadas() {
-        return pessoaSelecionadas;
+    public Pessoa getPessoaSelecionada() {
+        return pessoaSelecionada;
     }
 
-    public void setPessoaSelecionadas(List<Pessoa> pessoaSelecionadas) {
-        this.pessoaSelecionadas = pessoaSelecionadas;
+    public void setPessoaSelecionada(Pessoa pessoaSelecionada) {
+        this.pessoaSelecionada = pessoaSelecionada;
     }
 
 }
