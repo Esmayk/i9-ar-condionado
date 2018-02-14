@@ -6,6 +6,7 @@
 package br.com.i9arcondicionado.entidade;
 
 import java.math.BigInteger;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 import javax.persistence.Basic;
@@ -22,6 +23,7 @@ import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
+import javax.persistence.Transient;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import javax.xml.bind.annotation.XmlTransient;
@@ -35,18 +37,15 @@ import javax.xml.bind.annotation.XmlTransient;
 @SequenceGenerator(name = "seq_pessoa", sequenceName = "public.seq_pessoa", initialValue = 1, allocationSize = 1)
 public class Pessoa implements I9ArCondicionadoModel {
 
-    
-
     private static final long serialVersionUID = -2803600217199626683L;
 
-    
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO, generator = "seq_pessoa")
     @Basic(optional = false)
     @NotNull
     @Column(name = "pessoa_pk")
     private BigInteger id;
-    
+
     @Size(max = 100)
     @Column(name = "nome")
     private String nome;
@@ -88,9 +87,12 @@ public class Pessoa implements I9ArCondicionadoModel {
     @Column(name = "data_cadastro")
     @Temporal(TemporalType.DATE)
     private Date dataCadastro;
-    
+
     @Column(name = "status")
     private Character status;
+
+    @Transient
+    private String dtNas;
 
     @JoinColumn(name = "endereco_fk", referencedColumnName = "endereco_pk")
     @ManyToOne(optional = false, cascade = CascadeType.ALL)
@@ -219,6 +221,22 @@ public class Pessoa implements I9ArCondicionadoModel {
         this.manutencaoList = manutencaoList;
     }
 
+    public Character getStatus() {
+        return status;
+    }
+
+    public void setStatus(Character status) {
+        this.status = status;
+    }
+
+    public String getDtNas() {
+        return dtNas;
+    }
+
+    public void setDtNas(String dtNas) {
+        this.dtNas = dtNas;
+    }
+
     @Override
     public int hashCode() {
         int hash = 0;
@@ -243,13 +261,4 @@ public class Pessoa implements I9ArCondicionadoModel {
     public String toString() {
         return "br.com.i9arcondicionado.entidade.Pessoa[ id=" + id + " ]";
     }
-
-    public Character getStatus() {
-        return status;
-    }
-
-    public void setStatus(Character status) {
-        this.status = status;
-    }
- 
 }

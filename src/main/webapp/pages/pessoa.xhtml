@@ -19,19 +19,19 @@
                         <b:inputText placeholder="Cpf" 
                                      label="Cpf: " fieldSize="sm" value="#{pessoaBean.pessoa.cpf}"/>
 
-                        <b:selectOneMenu colMd="2" label="Estado_Civil:" labelColMd="2" fieldSize="sm" span="15" value="#{pessoaBean.pessoa.estadoCivil}">
+                        <b:selectOneMenu colMd="2" label="Estado_Civil:" labelColMd="2" field-size="sm" span="15" value="#{pessoaBean.pessoa.estadoCivil}">
                             <f:selectItem itemLabel="(Selecione uma Opção)" itemValue="" />
                             <f:selectItem itemLabel="SOLTEIRO" itemValue="S" />
                             <f:selectItem itemLabel="CASADO" itemValue="C" />
                         </b:selectOneMenu>
 
-                        <b:selectOneMenu  colMd="2" label="Sexo:" labelColMd="2" fieldSize="sm" span="15" value="#{pessoaBean.pessoa.sexo}">
+                        <b:selectOneMenu  colMd="2" label="Sexo:" labelColMd="2" field-size="sm" span="15" value="#{pessoaBean.pessoa.sexo}">
                             <f:selectItem itemLabel="(Selecione uma Opção)" itemValue="" />
                             <f:selectItem itemLabel="MASCULINO" itemValue="M" />
                             <f:selectItem itemLabel="FEMININO" itemValue="F" />
                         </b:selectOneMenu>
 
-                        <b:datepicker id="cdate3" mode="icon-popup" showWeek="false"
+                        <b:datepicker id="cdate3" mode="icon-popup" showWeek="false"  hidden="xs"
                                       firstDay="1" placeholder="Data Nascimento" 
                                       label="Date:" value="#{pessoaBean.pessoa.nascimento}"/>
 
@@ -48,6 +48,30 @@
 
                         <b:inputText placeholder="Celular" 
                                      label="Celular: " fieldSize="sm" value="#{pessoaBean.pessoa.celular}"/>
+
+
+
+                        <b:selectOneMenu id="estado" field-size="sm"
+                                         value="#{pessoaBean.estado}"
+                                         label="Estado">
+
+                            <f:selectItem noSelectionOption="true" 
+                                          itemLabel="Selecione um Estado." />
+                            <f:selectItems value="#{pessoaBean.estados}" var="estado"
+                                           itemValue="#{estado}"
+                                           itemLabel="#{estado.nome} - #{estado.sigla}" />
+                            <f:ajax listener="#{pessoaBean.popular}" render="cidade"/>
+                        </b:selectOneMenu>
+
+                        <b:selectOneMenu id="cidade" field-size="sm"
+                                         value="#{pessoaBean.cidade}" required="true"
+                                         requiredMessage="O campo 'Cidade' é obrigatório!" label="Cidade">
+                            <f:selectItem noSelectionOption="true"
+                                          itemLabel="Selecione um Cidade." />
+                            <f:selectItems value="#{pessoaBean.cidades}" var="cidade"
+                                           itemValue="#{cidade}" itemLabel="#{cidade.nome}" />
+                        </b:selectOneMenu>
+
 
                         <b:inputText label="Endereço: " 
                                      placeholder="Endereço"
@@ -70,9 +94,9 @@
                     </b:panelGrid>
                 </b:panel>
                 <b/>
-                <b:commandButton value="Voltar" action="list_pessoa.xhtml"/>
+                <b:commandButton value="Voltar"/>
                 <b/>
-                <b:commandButton value="Cadastrar" update="mgs"
+                <b:commandButton value="Cadastrar" update="msg"
                                  look="primary" onclick="ajax:pessoaBean.salvar()" />
             </b:form>
 

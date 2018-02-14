@@ -34,10 +34,10 @@ public class CidadeFacade extends AbstractFacade<Cidade>{
         super(Cidade.class);
     }
     
-    public Cidade listar(BigInteger estado) {
+    public List<Cidade> listar(BigInteger estado) {
         String consulta = "FROM Cidade WHERE estadoFk ="+ estado;
         Query query = getEntityManager().createQuery(consulta);
-        Cidade cidade = (Cidade) query.getSingleResult();
-        return cidade;
+        List<Cidade> cidades = (List<Cidade>) query.getResultList();
+        return cidades;
     }
 }

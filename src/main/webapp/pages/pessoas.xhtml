@@ -3,49 +3,39 @@
 <html xmlns="http://www.w3.org/1999/xhtml"
       xmlns:f="http://java.sun.com/jsf/core"
       xmlns:b="http://bootsfaces.net/ui"
-      xmlns:ui="http://java.sun.com/jsf/facelets">
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui">
     <ui:composition template="../template/template.xhtml">
         <ui:define name="conteudo">
             <b:form id="formListagem">
                 <h4>Listagem de Pessoas</h4>
                 <b:panel class="panel-heading">
                     <b:dataTable value="#{pessoaBean.pessoas}" border="false" lang="PT-Br"
-                                 selection-mode="single" selected-items="row" selected-row="#{pessoa}"
+                                 var="pessoa" customLangUrl="../json/pt-br.json" select="true"
+                                 selection-mode="single" selected-items="row" selected-row="#{pessoa}" 
                                  onselect="ajax:pessoaBean.onSelect(pessoa, typeOfSelection, indexes)">
-                        
+
                         <b:dataTableColumn value="#{pessoa.nome}" label="Nome" order="asc"/>
                         <b:dataTableColumn value="#{pessoa.cpf}" label="CPF"/>
-                        <b:dataTableColumn value="#{pessoa.nascimento}" label="Data Nascimento"  dataType="date"/>
+                        <b:dataTableColumn value="#{pessoa.dtNas}" label="Data Nascimento"/>
                         <b:dataTableColumn value="#{pessoa.celular}" label="Celular"/>
                         <b:dataTableColumn value="#{pessoa.status}" label="Status" />
-                        
+
                     </b:dataTable>
-                    
+
                     <b:commandButton value="Adicionar" action="#{pessoaBean.adicionar}" class="btn btn-primary" icon="glyphicon glyphicon-plus" ajax="false"/>
                     <b/>
-                    
-                    <b:commandButton value="Editar" update=":mgs" class="btn btn-warning" icon="glyphicon glyphicon-pencil" />
-                    <b/>
-                    
-                    <b:commandButton value="Remover" class="btn btn-danger" icon="glyphicon glyphicon-trash"
-                                     onclick="ajax:pessoaBean.remover();" update="formListagem">
-                    </b:commandButton>
-                    
-                </b:panel>
-                <b:modal id="amodal2" title="Modal Example" styleClass="modalPseudoClass2"
-                         closable="false"  close-on-escape="false" backdrop="false">
-                    <p>
-                        Deseja Remover Pessoa?
-                    </p>
-                    <f:facet name="footer">
-                        <b:button value="Close" dismiss="modal" />
-                        <b:button value="Ok" look="primary" dismiss="modal" />
-                    </f:facet>
-                </b:modal>
-            </b:form>
 
+                    <b:commandButton value="Editar" class="btn btn-warning" icon="glyphicon glyphicon-pencil" />
+                    <b/>
+
+                    <b:commandButton value="Remover" class="btn btn-danger" icon="glyphicon glyphicon-trash"
+                                     actionListener="#{pessoaBean.remover}">
+                        
+                    </b:commandButton>
+                </b:panel>
+            </b:form>
         </ui:define>
     </ui:composition>
-
 </html>
 
