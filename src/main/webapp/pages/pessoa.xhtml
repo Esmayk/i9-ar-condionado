@@ -7,28 +7,36 @@
       xmlns:pt="http://xmlns.jcp.org/jsf/passthrough">
     <ui:composition template="../template/template.xhtml">
         <ui:define name="conteudo">
-            <h4>Cadastro de Pessoas</h4>
+            <b:column>
+                <h3>Cadastro de Pessoas</h3>
+            </b:column>
             <b:form id="formCadastro">
                 <b:panel>
                     <b:panelGrid columns="3">
                         <b:inputText label="Nome: " 
-                                     placeholder="Nome"
+                                     placeholder="Nome" required="true"
                                      rendered="true" id="nome"
                                      fieldSize="sm" value="#{pessoaBean.pessoa.nome}"/>
 
-                        <b:inputText placeholder="Cpf" 
+                        <b:inputText placeholder="Cpf"  required="true"
                                      label="Cpf: " fieldSize="sm" value="#{pessoaBean.pessoa.cpf}"/>
 
-                        <b:selectOneMenu colMd="2" label="Estado_Civil:" labelColMd="2" field-size="sm" span="15" value="#{pessoaBean.pessoa.estadoCivil}">
+                        <b:selectOneMenu colMd="2" label="Estado.Civil:" labelColMd="2" field-size="sm" 
+                                         span="15" value="#{pessoaBean.pessoa.estadoCivil}">
                             <f:selectItem itemLabel="(Selecione uma Opção)" itemValue="" />
-                            <f:selectItem itemLabel="SOLTEIRO" itemValue="S" />
-                            <f:selectItem itemLabel="CASADO" itemValue="C" />
+                            <f:selectItem itemLabel="Solteiro(a)" itemValue="S" />
+                            <f:selectItem itemLabel="Casado(a)" itemValue="C" />
+                            <f:selectItem itemLabel="Divorciado(a)" itemValue="D" />
+                            <f:selectItem itemLabel="Viúvo(a)" itemValue="V" />
+                            <f:selectItem itemLabel="Separado(a)" itemValue="S" />
+                            <f:selectItem itemLabel="Outro(a)" itemValue="O" />
                         </b:selectOneMenu>
 
-                        <b:selectOneMenu  colMd="2" label="Sexo:" labelColMd="2" field-size="sm" span="15" value="#{pessoaBean.pessoa.sexo}">
+                        <b:selectOneMenu  colMd="2" label="Sexo:" labelColMd="2" field-size="sm" 
+                                          span="15" value="#{pessoaBean.pessoa.sexo}">
                             <f:selectItem itemLabel="(Selecione uma Opção)" itemValue="" />
-                            <f:selectItem itemLabel="MASCULINO" itemValue="M" />
-                            <f:selectItem itemLabel="FEMININO" itemValue="F" />
+                            <f:selectItem itemLabel="Masculino" itemValue="M" />
+                            <f:selectItem itemLabel="Feminino" itemValue="F" />
                         </b:selectOneMenu>
 
                         <b:datepicker id="cdate3" mode="icon-popup" showWeek="false"  hidden="xs"
@@ -46,17 +54,18 @@
                         <b:inputText placeholder="Telefone" 
                                      label="Telefone: " fieldSize="sm" value="#{pessoaBean.pessoa.telefone}"/>
 
-                        <b:inputText placeholder="Celular" 
-                                     label="Celular: " fieldSize="sm" value="#{pessoaBean.pessoa.celular}"/>
-
-
+                        <b:inputText placeholder="Celular" required="true"
+                                     label="Celular: " fieldSize="sm" 
+                                     value="#{pessoaBean.pessoa.celular}">
+                            <f:ajax listener="#{pessoaBean.listaEstado}" render="estado"/>
+                        </b:inputText>
 
                         <b:selectOneMenu id="estado" field-size="sm"
-                                         value="#{pessoaBean.estado}"
-                                         label="Estado">
-
+                                         value="#{pessoaBean.estado}" required="true"
+                                         requiredMessage="O camo 'Estado' é obrigatório!"
+                                         label="Estado:">
                             <f:selectItem noSelectionOption="true" 
-                                          itemLabel="Selecione um Estado." />
+                                          itemLabel="Selecione um Estado."  itemValue=""/>
                             <f:selectItems value="#{pessoaBean.estados}" var="estado"
                                            itemValue="#{estado}"
                                            itemLabel="#{estado.nome} - #{estado.sigla}" />
@@ -65,9 +74,9 @@
 
                         <b:selectOneMenu id="cidade" field-size="sm"
                                          value="#{pessoaBean.cidade}" required="true"
-                                         requiredMessage="O campo 'Cidade' é obrigatório!" label="Cidade">
+                                         requiredMessage="O campo 'Cidade' é obrigatório!" label="Cidade:">
                             <f:selectItem noSelectionOption="true"
-                                          itemLabel="Selecione um Cidade." />
+                                          itemLabel="Selecione uma Cidade." itemValue=""/>
                             <f:selectItems value="#{pessoaBean.cidades}" var="cidade"
                                            itemValue="#{cidade}" itemLabel="#{cidade.nome}" />
                         </b:selectOneMenu>
@@ -93,13 +102,17 @@
 
                     </b:panelGrid>
                 </b:panel>
-                <b/>
-                <b:commandButton value="Voltar"/>
-                <b/>
-                <b:commandButton value="Cadastrar" update="msg"
-                                 look="primary" onclick="ajax:pessoaBean.salvar()" />
-            </b:form>
 
+                <b:column>
+                    <b:button value="Voltar" 
+                              icon="glyphicon glyphicon-repeat"
+                              onclick="history.back()"/>
+                    <b/>
+                    <b:commandButton value="Cadastrar"  update="msg formCadastro estado"
+                                     icon="glyphicon glyphicon-ok"
+                                     look="primary" onclick="ajax:pessoaBean.salvar()"/>
+                </b:column>
+            </b:form>
         </ui:define>
     </ui:composition>
 </html>

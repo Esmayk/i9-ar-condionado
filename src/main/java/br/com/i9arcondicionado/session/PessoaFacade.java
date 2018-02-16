@@ -18,24 +18,28 @@ import javax.persistence.Query;
  */
 @Stateless
 public class PessoaFacade extends AbstractFacade<Pessoa> {
-
+    
     @PersistenceContext(unitName = "I9ArcondicionadoPU")
     private EntityManager em;
-
+    
     @Override
     protected EntityManager getEntityManager() {
         return em;
     }
-
+    
     public PessoaFacade() {
         super(Pessoa.class);
     }
     
-    public void inserir(Pessoa pessoa) {
-        super.create(pessoa);
+    public void merge(Pessoa pessoa) {
+        if (pessoa.getId() == null) {
+            super.create(pessoa);
+        } else {
+            super.edit(pessoa);
+        }
     }
     
-    public void remover(Pessoa pessoa){
+    public void remover(Pessoa pessoa) {
         String update = "update Pessoa set status = 'I' where id =:id";
         Query query = getEntityManager().createQuery(update);
         query.setParameter("id", pessoa.getId());

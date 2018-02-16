@@ -13,8 +13,8 @@ import br.com.i9arcondicionado.session.CidadeFacade;
 import br.com.i9arcondicionado.session.EstadoFacade;
 import br.com.i9arcondicionado.session.PessoaFacade;
 import java.io.Serializable;
-import java.math.BigInteger;
 import java.text.SimpleDateFormat;
+import java.util.AbstractList;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -58,62 +58,106 @@ public class PessoaBean implements Serializable {
         endereco = new Endereco();
     }
 
-    public void salvar() {
-        try {
-            endereco = new Endereco();
-            //cidade = cidadeFacade.listar();
-            endereco.setCidadeFk(cidade);
-            pessoa.setEnderecoFk(endereco);
-            pessoa.setDataCadastro(new Date());
-            pessoaFacade.inserir(pessoa);
-            pessoa = new Pessoa();
-            FacesMessages.info("Pessoa salvo com sucesso.");
-        } catch (RuntimeException erro) {
-            FacesMessages.error("Ocorreu um erro ao tentar gerar um novo pessoa");
-            erro.printStackTrace();
-        }
-
-    }
-
-    public String adicionar() {
-        estados = estadoFacade.listar();
-        return "pessoa";
-    }
-
-    public String voltar() {
-        return "pessoa";
-    }
-
-    public void popular() {
-        if (estado != null) {
-            cidades = (List<Cidade>) cidadeFacade.listar(estado.getId());
-            estados = estadoFacade.listar();
-        } else {
-            cidades = new ArrayList<>();
-        }
-    }
-
     @PostConstruct
     public void listar() {
         try {
             List<Pessoa> lista = pessoaFacade.listar();
             pessoas = listaPessoasFormatada(lista);
         } catch (RuntimeException erro) {
-            FacesMessages.error("Ocorreu um erro ao tentar listar os pessoas");
-            erro.printStackTrace();
+            FacesMessages.error("Ocorreu um erro ao tentar listar pessoas!");
+            erro.getMessage();
         }
 
     }
 
+    private List<Pessoa> listaPessoasFormatada(List<Pessoa> lista) {
+        for (Pessoa pes : lista) {
+            pes.setDtNas(format.format(pes.getNascimento()));
+            pessoas.add(pes);
+        }
+        return pessoas;
+    }
+
+    public String adicionar() {
+        return "pessoa";
+    }
+
+    public void listaEstado() {
+        if (pessoa.getId() == null) {
+            estado = null;
+            cidade = null;
+            try {
+                estados = estadoFacade.findAll();
+            } catch (RuntimeException erro) {
+                FacesMessages.error("Ocorreu um erro ao tentar listar estados!");
+                erro.getMessage();
+            }
+        }
+    }
+
+    public String editar() {
+        if (pessoaSelecionada == null) {
+            FacesMessages.error("Selecione uma Pessoa");
+        } else {
+            pessoa = pessoaSelecionada;
+            endereco = pessoa.getEnderecoFk();
+            cidade = pessoa.getEnderecoFk().getCidadeFk();
+            estado = pessoa.getEnderecoFk().getCidadeFk().getEstadoFk();
+            try {
+                estados = estadoFacade.findAll();
+                cidades = cidadeFacade.listar(estado.getId());
+            } catch (RuntimeException erro) {
+                FacesMessages.error("Ocorreu um erro ao tentar listar estados e cidades!");
+                erro.getMessage();
+            }
+        }
+        return "pessoa";
+    }
+
+    public void popular() {
+        if (estado != null) {
+            try {
+                cidades = (List<Cidade>) cidadeFacade.listar(estado.getId());
+            } catch (RuntimeException erro) {
+                FacesMessages.error("Ocorreu um erro ao tentar listar cidades!");
+                erro.getMessage();
+            }
+        } else {
+            cidades = new ArrayList<>();
+        }
+    }
+
     public void remover() {
         try {
-            pessoaFacade.remover(pessoaSelecionada);
-            pessoas.clear();
-            List<Pessoa> lista = pessoaFacade.listar();
-            pessoas = listaPessoasFormatada(lista);
-            FacesMessages.info("Pessoa removido com sucesso.");
+            if (pessoaSelecionada == null) {
+                FacesMessages.error("Selecione uma Pessoa");
+            } else {
+                pessoaFacade.remover(pessoaSelecionada);
+                pessoas.clear();
+                List<Pessoa> lista = pessoaFacade.listar();
+                pessoas = listaPessoasFormatada(lista);
+                FacesMessages.info("Pessoa removido com sucesso!");
+            }
         } catch (RuntimeException erro) {
-            FacesMessages.error("Ocorreu um erro ao tentar remover pessoa.");
+            FacesMessages.error("Ocorreu um erro ao tentar remover pessoa!");
+            erro.getMessage();
+        }
+    }
+
+    public void salvar() {
+        try {
+            endereco.setCidadeFk(cidade);
+            pessoa.setEnderecoFk(endereco);
+            pessoa.setStatus('A');
+            pessoa.setDataCadastro(new Date());
+            pessoaFacade.merge(pessoa);
+            pessoa = new Pessoa();
+            endereco = new Endereco();
+            cidades = new ArrayList<>();
+            estados = new ArrayList<>();
+            FacesMessages.info("Pessoa salvo com sucesso!");
+        } catch (RuntimeException erro) {
+            FacesMessages.error("Ocorreu um erro ao tentar gerar um novo pessoa!");
             erro.getMessage();
         }
     }
@@ -131,14 +175,6 @@ public class PessoaBean implements Serializable {
                 }
             }
         }
-    }
-
-    private List<Pessoa> listaPessoasFormatada(List<Pessoa> lista) {
-        for (Pessoa pes : lista) {
-            pes.setDtNas(format.format(pes.getNascimento()));
-            pessoas.add(pes);
-        }
-        return pessoas;
     }
 
     public PessoaFacade getPessoaFacade() {
